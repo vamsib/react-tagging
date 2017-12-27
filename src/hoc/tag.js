@@ -1,39 +1,19 @@
 import React, { Component } from 'react';
+import { withHandlers } from 'recompose'
 
 export function tag(tagHandlers) {
 
-  tagHandlers = tagHandlers || {}
+  return withHandlers((function (tagHandlers) {
+    return (props) => {
+      let handlers = {}
+      Object.keys(tagHandlers).forEach(function(handlerName) {
+        handlers[handlerName] = props => function() {
+          tagHandlers[handlerName].apply(null, [ props, ...arguments ]);
+          props[handlerName].apply(null, arguments);
+        }
+      })
+      return handlers;
+    };
+  })(tagHandlers));
 
-  return function (WrappedComponent) {
-
-    class WithTracking extends Component {
-
-      constructor(props) {
-        super(props)
-      }
-
-      render() {
-        let trackingProps = {...this.props} 
-        Object.keys(tagHandlers).map((key) => {
-          if (this.props[key] && typeof this.props[key] === 'function') {
-            trackingProps[key] = function() {
-              tagHandlers[key].apply(null, [this.props, ...arguments])
-              this.props[key].apply(null, arguments)
-            }.bind(this)
-          } 
-          if (!this.props[key]) {
-            trackingProps[key]  =  function() {
-              tagHandlers[key].apply(null, [this.props, ...arguments])
-            }.bind(this)
-          }
-        })
-        return (<WrappedComponent {...trackingProps}/>)
-      }
-
-    }
-
-    WithTracking.displayName = `withTracking(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`
-
-    return WithTracking
-  }
 }

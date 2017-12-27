@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import TodoTextInput from './TodoTextInput'
 import { tag } from '../hoc/tag'
+import { withHandlers } from 'recompose'
 
 export class TodoItem extends Component {
   static propTypes = {
