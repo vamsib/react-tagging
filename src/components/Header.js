@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import TodoTextInput from './TodoTextInput'
-import { tag } from '../hoc/tag'
+import { tagActions } from '../hoc/tag'
 
 export class Header extends Component {
   static propTypes = {
@@ -26,7 +26,7 @@ export class Header extends Component {
   }
 }
 
-export default tag({
+export default tagActions({
   addTodo(props, text) {
     console.log("Track: add todo", text)
   }

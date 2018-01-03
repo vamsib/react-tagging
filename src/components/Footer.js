@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { tag } from '../hoc/tag'
+import { tagActions } from '../hoc/tag'
 import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/TodoFilters'
 
 const FILTER_TITLES = {
@@ -75,7 +75,7 @@ export class Footer extends Component {
   }
 }
 
-export default tag({
+export default tagActions({
   onShow(props, filter) {
     let count = filter === 'show_active' 
                 ? props.activeCount

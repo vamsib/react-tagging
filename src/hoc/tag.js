@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { withHandlers } from 'recompose'
+import { withHandlers } from 'recompose';
 
-export function tag(tagHandlers) {
+export function tagActions(actions) {
 
-  return withHandlers((function (tagHandlers) {
-    return (props) => {
-      let handlers = {}
-      Object.keys(tagHandlers).forEach(function(handlerName) {
-        handlers[handlerName] = props => function() {
-          tagHandlers[handlerName].apply(null, [ props, ...arguments ]);
-          props[handlerName].apply(null, arguments);
-        }
-      })
-      return handlers;
-    };
-  })(tagHandlers));
+  function wrapAction(taggedActions, action) {
+    taggedActions[action] = props => function() {
+      actions[action].apply(null, [ props, ...arguments ]);
+      props[action].apply(null, arguments);
+    }
+    return taggedActions;
+  }
+
+  return withHandlers((props) => {
+    return Object.keys(actions).reduce(wrapAction, {});
+  });
 
 }
