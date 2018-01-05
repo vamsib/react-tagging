@@ -1,5 +1,5 @@
-import React from 'react';
-import { tagActions } from './tag';
+import React, { Component } from 'react';
+import { tagActions, tagView } from './tag';
 import { mount } from 'enzyme';
 
 import jsdom from 'jsdom';
@@ -73,5 +73,31 @@ describe('Tag HoC', function() {
       wrapper.find('.cta').simulate('click');
 
       expect(tagFn).toHaveBeenLastCalledWith({url: 'https://yahoo.com', onSomeAction: actionFn}, 1, 'a', {});
+  });
+
+  it('calls origin componentDidMount after tracking component view', function() {
+      let testFn = jest.fn();
+      let TestComponent = class extends Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            foo: 'bar'
+          }
+        }
+
+        componentDidMount() {
+          testFn(this.state.foo);
+        }
+
+        render() {
+          return (<div className='test'></div>);
+        }
+      };
+      let tagFn = jest.fn();
+      let TaggedTestComponent = tagView(tagFn)(TestComponent);
+      let wrapper = mount(<TaggedTestComponent/>);
+      expect(tagFn.mock.calls.length).toBe(1);
+      expect(testFn.mock.calls.length).toBe(1);
+      expect(testFn).toHaveBeenCalledWith('bar');
   });
 });

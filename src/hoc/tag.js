@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withHandlers } from 'recompose';
+import { withHandlers, lifecycle } from 'recompose';
 
 export function tagActions(actions) {
 
@@ -15,4 +15,10 @@ export function tagActions(actions) {
     return Object.keys(actions).reduce(wrapAction, {});
   });
 
+}
+
+export function tagView(viewTracker) {
+  return lifecycle({
+    componentDidMount: viewTracker
+  });
 }
